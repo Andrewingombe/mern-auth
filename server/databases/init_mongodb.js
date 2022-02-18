@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 //connect to database
 mongoose
-  .connect('mongodb://localhost:27017', { dbName: 'mern_auth' })
+  .connect(process.env.MONGO_URI, { dbName: process.env.DB_NAME })
   .then(() => console.log(`Mongodb connected`))
   .catch((err) => console.log(err.message));
 

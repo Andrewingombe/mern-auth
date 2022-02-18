@@ -1,6 +1,9 @@
 const User = require('../models/users.model');
 const createError = require('http-errors');
-const { createAccessToken } = require('../helpers/jwt_helpers');
+const {
+  createAccessToken,
+  createRefreshToken,
+} = require('../helpers/jwt_helpers');
 
 //register a user
 module.exports.register_post = async (req, res, next) => {
@@ -17,13 +20,17 @@ module.exports.register_post = async (req, res, next) => {
 
     const savedUser = await user.save();
 
-    //create access and refresh tokens
+    // create access and refresh tokens
     const accessToken = await createAccessToken(
-      savedUser._id,
+      savedUser.id,
+      savedUser.isAdmin
+    );
+    const refreshToken = await createRefreshToken(
+      savedUser.id,
       savedUser.isAdmin
     );
 
-    res.status(201).json(savedUser);
+    res.status(201).json({ accessToken, refreshToken });
   } catch (err) {
     next(
       createError.InternalServerError(
@@ -44,8 +51,10 @@ module.exports.login_post = async (req, res, next) => {
     if (!isMatch) throw createError.Unauthorized('Invalid email/password');
 
     //create access and refresh tokens
+    const accessToken = await createAccessToken(user.id, user.isAdmin);
+    const refreshToken = await createRefreshToken(user.id, user.isAdmin);
 
-    res.status(200).json(user);
+    res.status(200).json({ accessToken, refreshToken });
   } catch (err) {
     next(
       createError.InternalServerError(
