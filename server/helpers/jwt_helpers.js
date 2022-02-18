@@ -6,7 +6,7 @@ const createAccessToken = (id, isAdmin) => {
     jwt.sign(
       { id, isAdmin },
       process.env.ACCESSTOKEN_SECRET,
-      { expiresIn: '15m' },
+      { expiresIn: '1m' },
       (err, token) => {
         if (err) reject(createError.InternalServerError());
         resolve(token);

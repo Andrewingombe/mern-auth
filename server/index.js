@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const createError = require('http-errors');
 const authRoutes = require('./routes/authRoutes');
+const { verifyAccessToken } = require('./middleware/verifyAccessTokens');
 require('dotenv').config();
 require('./databases/init_mongodb');
 
@@ -14,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
 //main route
-app.get('/', (req, res) =>
+app.get('/', verifyAccessToken, (req, res) =>
   res.status(200).send('<h1>This is a restricted & private route</h1>')
 );
 app.use('/auth', authRoutes);

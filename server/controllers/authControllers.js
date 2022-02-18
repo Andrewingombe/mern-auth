@@ -40,6 +40,7 @@ module.exports.register_post = async (req, res, next) => {
   }
 };
 
+//login a user
 module.exports.login_post = async (req, res, next) => {
   const { email, password } = req.body;
   try {
@@ -62,4 +63,10 @@ module.exports.login_post = async (req, res, next) => {
       )
     );
   }
+};
+
+//refresh access tokens
+module.exports.refreshTokens_post = async (req, res, next) => {
+  const { refreshToken } = req.body;
+  res.json(refreshToken);
 };
